@@ -1,10 +1,13 @@
-# Mini_Project_2
-[![CI/CD Pipeline](https://github.com/nogibjj/Peter_Min_Data_Engineering_Project2/actions/workflows/cicd.yml/badge.svg?branch=main)](https://github.com/nogibjj/Peter_Min_Data_Engineering_Project2/actions/workflows/cicd.yml)
+# Mini_Project_3
 
-This is the README for my Mini Project 2 for the IDS706 - Data Engineering Systems class at Duke University.
+
+This is the README for my Mini Project 3 for the IDS706 - Data Engineering Systems class at Duke University.
 
 ## Dataset
 The dataset comes from Kaggle, a public machine learning and data science community. It contains a CSV file of detailed information regarding the most-streamed Spotify songs in 2023. Link: https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023/data
+
+## Techniques Applied
+In addition to [Pandas]("https://pandas.pydata.org/") for convenience with drawing figures, I have integrated [Polars]("https://pola.rs") for more convenience in data preparation. Compared to Pandas, Polars is faster and more expressive in terms of mimicking the behaviors of data wranling syntax.
 
 ## Data Visualization
 For the visualization, I analyzed and visualized the 10 hottest artists by their stream counts.

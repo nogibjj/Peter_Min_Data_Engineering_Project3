@@ -1,21 +1,22 @@
 import pandas as pd
+import polars as pl
 from matplotlib import pyplot as plt
 from ydata_profiling import ProfileReport
 
 
 def read_spotify_data(filename):
-    return pd.read_csv(filename, encoding="latin-1")
+    return pl.read_csv(filename, encoding="utf8-lossy", ignore_errors=True)
 
 
-def generate_summary_stats(df: pd.DataFrame):
+def generate_summary_stats(df: pl.DataFrame):
     return df.describe()
 
 
 def generate_summary_for_stream_count():
     df = read_spotify_data("spotify-2023.csv")
 
-    df["streams"] = pd.to_numeric(df["streams"], errors="coerce")
-    df.dropna(subset=["streams"], inplace=True)
+    df.select(pl.col("streams").cast(pl.Int64))
+    df.select(pl.col("streams").drop_nans())
 
     stream_median = df["streams"].median()
     stream_max = df["streams"].max()
@@ -40,17 +41,19 @@ def generate_markdown():
         file.write(info3)
 
 
-def generate_reports(df: pd.DataFrame):
+def generate_reports(filename):
+    df = pd.read_csv(filename, encoding="latin-1")
     profile = ProfileReport(df, title="Spotify Streaming Data 2023")
     profile.to_file("spotify_data.html")
 
 
-def generate_bar_chart_for_most_popular_artists(df: pd.DataFrame):
-    df["streams"] = pd.to_numeric(df["streams"], errors="coerce")
-    df.dropna(subset=["streams"], inplace=True)
+def generate_bar_chart_for_most_popular_artists(df: pl.DataFrame):
+    df.select(pl.col("streams").cast(pl.Int64))
+    df.select(pl.col("streams").drop_nans())
 
     # Create bar chart for 10 hottest songs reflected in stream counts
-    top_artists = df.groupby("artist(s)_name")["streams"].sum().nlargest(10)
+    top_artists = df.to_pandas()
+    top_artists = top_artists.groupby("artist(s)_name")["streams"].sum().nlargest(10)
     plt.figure(figsize=(10, 6))
     top_artists.plot(kind="bar", color="blue")
     plt.title("10 Hottest Artists by Total Stream Count")
@@ -66,7 +69,7 @@ def main():
     print(summary_stats)
 
     generate_markdown()
-    generate_reports(spotify_df)
+    generate_reports("spotify-2023.csv")
     generate_bar_chart_for_most_popular_artists(spotify_df)
 
 
