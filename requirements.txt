@@ -9,3 +9,4 @@ numpy
 matplotlib
 ydata_profiling
 polars
+pyarrow
